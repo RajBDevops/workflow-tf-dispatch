@@ -43,7 +43,7 @@ jobs:
             terraform plan -var="env=${{ github.event.inputs.environment }}"
           elif [ "${{ github.event.inputs.action }}" = "apply" ]; then
             terraform apply -auto-approve -var="env=${{ github.event.inputs.environment }}"
-             elif [ "${{ github.event.inputs.action }}" = "distroy" ]; then
+          elif [ "${{ github.event.inputs.action }}" = "destroy" ]; then
             terraform destroy -auto-approve -var="env=${{ github.event.inputs.environment }}"
           else
             echo "Invalid action. Choose 'plan' or 'apply'."
