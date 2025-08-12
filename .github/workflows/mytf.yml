@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "Choose plan or apply"
+        description: "Choose plan or apply or destroy"
         required: true
         default: "plan"
       environment:
@@ -37,12 +37,14 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Plan or Apply
+      - name: Terraform Plan or Apply or Destroy
         run: |
           if [ "${{ github.event.inputs.action }}" = "plan" ]; then
             terraform plan -var="env=${{ github.event.inputs.environment }}"
           elif [ "${{ github.event.inputs.action }}" = "apply" ]; then
             terraform apply -auto-approve -var="env=${{ github.event.inputs.environment }}"
+             elif [ "${{ github.event.inputs.action }}" = "distroy" ]; then
+            terraform destroy -auto-approve -var="env=${{ github.event.inputs.environment }}"
           else
             echo "Invalid action. Choose 'plan' or 'apply'."
             exit 1
