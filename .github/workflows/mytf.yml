@@ -1,0 +1,45 @@
+name: deploy the ec2 by using workflow dispatch
+on: 
+  workflow_dispatch:
+    inputs:
+      action:
+      discription: "chosee plan or apply"
+      required: true
+      default: "plan"
+      envorment:
+        description: "Target environment"
+        required: true
+        default: "main"
+      jobs:
+        runs-on: ubuntu=latest
+         env:
+           AWS_REGION: us-east-1
+          steps:
+            -  name: aws configuration
+               uses: actions/checkout@v2
+               with:
+                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                aws-region: ${{ env.AWS_REGION }}
+            -  name: terraform config
+               uses: 2nd-tf-ec2-actions/main.tf
+               uses: hashicorp/setup-terraform@v3
+               with:
+                terraform_version: 1.7.5
+              - name: terraform init
+                run: terraform init
+              - name: terraform plan or apply
+                run: |
+                    if [ "${{ github.event.inputs.action }}" = "plan" ]; then
+                       terraform plan -var="env=${{ github.event.inputs.environment }}"
+                    elif [ "${{ github.event.inputs.action }}" = "apply" ]; then
+                    terraform apply -auto-approve -var="env=${{ github.event.inputs.environment }}"
+                    else
+                    echo "Invalid action. Choose 'plan' or 'apply'."
+                    exit 1
+                    fi
+                
+
+          
+      
+      
