@@ -11,7 +11,7 @@ on:
         description: "Target environment"
         required: true
         default: "main"
-
+    
 jobs:
   terraform:
     runs-on: ubuntu-latest
